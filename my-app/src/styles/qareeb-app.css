@@ -1,0 +1,621 @@
+@keyframes qareeb-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes qareeb-shimmer {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes qareeb-ping {
+  75%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.qareeb-app {
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+.qareeb-app *,
+.qareeb-app *::before,
+.qareeb-app *::after {
+  box-sizing: border-box;
+}
+
+.qareeb-app .syne {
+  font-family: "Manrope", "Tajawal", sans-serif;
+}
+
+.qareeb-app .accent {
+  color: var(--accent);
+}
+
+.qareeb-app .accent2 {
+  color: var(--brand);
+}
+
+.qareeb-app .fade-up {
+  animation: qareeb-fade-up 0.38s ease both;
+}
+
+.qareeb-app .fade-up-2 {
+  animation: qareeb-fade-up 0.38s 0.08s ease both;
+}
+
+.qareeb-app .fade-up-3 {
+  animation: qareeb-fade-up 0.38s 0.16s ease both;
+}
+
+.qareeb-app .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.qareeb-app .tag-request {
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--brand);
+}
+
+.qareeb-app .tag-offer {
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--accent);
+}
+
+.qareeb-app .tag-mine {
+  background: rgba(15, 118, 110, 0.18);
+  color: var(--brand-strong);
+}
+
+.qareeb-app .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: all 0.18s ease;
+  outline: none;
+}
+
+.qareeb-app .btn-primary {
+  background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+  color: #fff;
+  box-shadow: 0 18px 34px rgba(15, 118, 110, 0.24);
+}
+
+.qareeb-app .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 36px rgba(15, 118, 110, 0.3);
+}
+
+.qareeb-app .btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.qareeb-app .btn-secondary:hover {
+  border-color: rgba(20, 33, 61, 0.2);
+  color: var(--text);
+}
+
+.qareeb-app .btn-ghost {
+  background: transparent;
+  color: var(--muted);
+}
+
+.qareeb-app .btn-ghost:hover {
+  color: var(--text);
+}
+
+.qareeb-app .btn-danger {
+  background: rgba(249, 115, 22, 0.14);
+  color: var(--accent);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.qareeb-app .btn-danger:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.qareeb-app .btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+}
+
+.qareeb-app .btn-icon {
+  padding: 8px;
+  border-radius: 12px;
+  aspect-ratio: 1;
+}
+
+.qareeb-app .input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qareeb-app .input-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.qareeb-app .input {
+  background: var(--surface-strong);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 11px 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.18s;
+}
+
+.qareeb-app .input:focus {
+  border-color: var(--brand);
+}
+
+.qareeb-app .input::placeholder {
+  color: var(--muted);
+}
+
+.qareeb-app textarea.input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.qareeb-app select.input {
+  cursor: pointer;
+}
+
+.qareeb-app .card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+
+.qareeb-app .card:hover {
+  border-color: rgba(20, 33, 61, 0.18);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+}
+
+.qareeb-app .nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 253, 249, 0.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 64px;
+}
+
+.qareeb-app .nav-logo {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.qareeb-app .nav-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.qareeb-app .nav-tab {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.qareeb-app .nav-tab:hover {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+.qareeb-app .nav-tab.active {
+  background: var(--surface-strong);
+  color: var(--brand-strong);
+  border: 1px solid var(--line);
+}
+
+.qareeb-app .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qareeb-app .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--brand);
+  background: linear-gradient(135deg, var(--brand), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.qareeb-app .listing-card {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qareeb-app .listing-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.qareeb-app .listing-card-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qareeb-app .listing-card-body {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.qareeb-app .listing-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.qareeb-app .listing-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qareeb-app .listing-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.qareeb-app .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.qareeb-app .modal {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+  animation: qareeb-fade-up 0.25s ease;
+}
+
+.qareeb-app .modal-header {
+  padding: 22px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qareeb-app .modal-body {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qareeb-app .modal-footer {
+  padding: 0 24px 22px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.qareeb-app .qareeb-page {
+  padding: 28px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.qareeb-app .feed-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.qareeb-app .sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.qareeb-app .layout-2col {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .qareeb-app .layout-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.qareeb-app .stat-chip {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.qareeb-app .stat-chip-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.qareeb-app .stat-chip-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.qareeb-app .auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.qareeb-app .auth-box {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.qareeb-app .auth-logo {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.qareeb-app .auth-tabs {
+  display: flex;
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.qareeb-app .auth-tab {
+  flex: 1;
+  padding: 9px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.18s;
+  background: transparent;
+  color: var(--muted);
+}
+
+.qareeb-app .auth-tab.active {
+  background: var(--surface-strong);
+  color: var(--brand-strong);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+.qareeb-app .auth-box .card {
+  margin: 0 auto;
+}
+
+.qareeb-app .auth-box .input-wrap {
+  text-align: right;
+}
+
+.qareeb-app .profile-hero {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 255, 255, 0.72)
+  );
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.06);
+}
+
+.qareeb-app .profile-avatar-lg {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: #fff;
+  border: 3px solid rgba(15, 118, 110, 0.5);
+  flex-shrink: 0;
+}
+
+.qareeb-app .profile-info h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.qareeb-app .profile-info p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-top: 3px;
+}
+
+.qareeb-app .badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.qareeb-app .filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.qareeb-app .filter-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font: inherit;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.qareeb-app .filter-pill:hover {
+  color: var(--text);
+  border-color: rgba(20, 33, 61, 0.2);
+}
+
+.qareeb-app .filter-pill.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+.qareeb-app .empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+}
+
+.qareeb-app .empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.qareeb-app .empty h3 {
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.qareeb-app .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+  display: inline-block;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.25);
+}
+
+.qareeb-app .divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+}
+
+.qareeb-app .search-wrap {
+  position: relative;
+}
+
+.qareeb-app .search-wrap .input {
+  padding-left: 38px;
+}
+
+.qareeb-app .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 1rem;
+  pointer-events: none;
+}
