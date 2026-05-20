@@ -1,92 +1,67 @@
-import { useState } from 'react'
-import { login } from '../api/api'
-
-const handle = async () => {
-  try {
-    if (!form.phoneNumber.startsWith('05') || form.phoneNumber.length !== 10) {
-      setErr('يرجى إدخال رقم الهاتف الصحيح')
-      return
-    }
-
-    const token = await login(form)
-
-    localStorage.setItem('token', token)
-
-    onAuth({
-      phoneNumber: form.phoneNumber,
-      token,
-    })
-
-  } catch (e) {
-    setErr('فشل تسجيل الدخول')
-  }
-}
+import { useState } from "react";
+import { baseFetch } from "../api/api";
 
 function SignIn({ onAuth }) {
   const [form, setForm] = useState({
-    phoneNumber: '',
-    password: '',
-  })
+    phoneNumber: "",
+    password: "",
+  });
 
-  const [err, setErr] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handle = async () => {
-
-    // Frontend validation
-    if (!form.phoneNumber.startsWith('05') ||
-        form.phoneNumber.length !== 10) {
-
-      setErr('يرجى إدخال رقم هاتف صحيح')
-      return
+    if (!form.phoneNumber.startsWith("05") || form.phoneNumber.length !== 10) {
+      setErr("يرجى إدخال رقم هاتف صحيح");
+      return;
     }
 
     if (form.password.length < 8) {
-      setErr('كلمة المرور يجب أن تكون 8 أحرف على الأقل')
-      return
+      setErr("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+      return;
     }
 
     try {
+      setLoading(true);
+      setErr("");
 
-      setLoading(true)
-      setErr('')
+      const response = await baseFetch("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(form),
+      });
 
-      const response = await fetch(
-        'http://localhost:8080/auth/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(form),
-        }
-      )
-
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'فشل تسجيل الدخول')
+        throw new Error(data.message || "فشل تسجيل الدخول");
       }
 
-      // Save JWT token
-      localStorage.setItem('token', data.token)
+      console.log(data);
 
-      // Optional user data
-      onAuth(data)
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data));
 
+      onAuth(data);
     } catch (error) {
+      const raw = (error && error.message) || "";
+      const lowered = String(raw).toLowerCase();
+      const isNetworkFailure =
+        lowered.includes("failed to fetch") ||
+        lowered.includes("load failed") ||
+        lowered.includes("networkerror");
 
-      setErr(error.message)
-
+      setErr(
+        isNetworkFailure
+          ? "تعذر الاتصال بالخادم. تأكد أن الخادم يعمل وأن هاتفك على نفس الشبكة."
+          : raw,
+      );
     } finally {
-
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div className="input-wrap">
         <label className="input-label">رقم الهاتف</label>
 
@@ -124,10 +99,10 @@ function SignIn({ onAuth }) {
       {err && (
         <div
           style={{
-            color: 'var(--accent)',
-            fontSize: '.83rem',
-            padding: '8px 12px',
-            background: 'rgba(249, 115, 22, 0.12)',
+            color: "var(--accent)",
+            fontSize: ".83rem",
+            padding: "8px 12px",
+            background: "rgba(249, 115, 22, 0.12)",
             borderRadius: 12,
           }}
         >
@@ -138,17 +113,17 @@ function SignIn({ onAuth }) {
       <button
         className="btn btn-primary"
         style={{
-          width: '100%',
+          width: "100%",
           marginTop: 4,
           padding: 13,
         }}
         onClick={handle}
         disabled={loading}
       >
-        {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+        {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
       </button>
     </div>
-  )
+  );
 }
 
-export default SignIn
+export default SignIn;

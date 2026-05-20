@@ -623,7 +623,7 @@ body[data-lang="ar"] {
 
 @media (max-width: 640px) {
   .container {
-    width: min(100% - 1.1rem, 1180px);
+    width: min(1180px, calc(100% - 1.1rem));
   }
 
   .topbar {
@@ -635,8 +635,23 @@ body[data-lang="ar"] {
     padding: 2.2rem 0 2rem;
   }
 
+  /* On very small screens, keep content first (undo the <=980px showcase order). */
+  .showcase {
+    order: 0;
+  }
+
   .hero h1 {
     font-size: clamp(2.45rem, 12vw, 3.6rem);
+  }
+
+  .hero p {
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  .eyebrow {
+    font-size: 0.84rem;
+    padding: 0.45rem 0.75rem;
   }
 
   .actions {
@@ -645,6 +660,46 @@ body[data-lang="ar"] {
 
   .btn {
     width: 100%;
+  }
+
+  .phone {
+    width: min(100%, 21rem);
+    padding: 0.8rem;
+    border-radius: 2.05rem;
+  }
+
+  .screen-top {
+    padding: 0.85rem 0.85rem 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .screen-card {
+    margin: 0.25rem 0.85rem 0;
+    padding: 0.85rem;
+  }
+
+  .screen-card h3 {
+    font-size: 1rem;
+  }
+
+  .screen-card p {
+    font-size: 0.88rem;
+  }
+
+  .map {
+    margin: 0.85rem;
+    height: 10.5rem;
+  }
+
+  .delivery-card {
+    padding: 0.75rem;
+    border-radius: 1.15rem;
+  }
+
+  .avatar {
+    width: 2.7rem;
+    height: 2.7rem;
+    border-radius: 0.9rem;
   }
 
   .lang-switch {
