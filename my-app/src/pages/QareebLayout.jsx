@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/landing.css";
 import "../styles/qareeb-app.css";
@@ -155,8 +155,6 @@ function QareebLayout() {
           desc: trip?.description || "",
           from: trip?.pickupLocation || "—",
           to: trip?.destinationLocation || "—",
-          price: trip?.price ?? 0,
-          currency: "شيكل",
           date: formatDate(trip?.createdAt),
           urgent: false,
         };
@@ -179,11 +177,13 @@ function QareebLayout() {
 
   useEffect(() => {
     const storedUser = readStoredUser();
-    if (storedUser && !user) setUser(storedUser);
-    loadData(storedUser || user);
+    const t = setTimeout(() => {
+      void loadData(storedUser || user);
+    }, 0);
 
     // Cleanup: invalidate any in-flight requests on unmount
     return () => {
+      clearTimeout(t);
       loadSeqRef.current += 1;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -239,18 +239,15 @@ function QareebLayout() {
     navigate("/", { replace: true });
   };
 
-  const outletContext = useMemo(
-    () => ({
-      user,
-      listings,
-      stats,
-      isLoading,
-      setShowNew,
-      setContactTarget,
-      deleteListing,
-    }),
-    [user, listings, stats, isLoading],
-  );
+  const outletContext = {
+    user,
+    listings,
+    stats,
+    isLoading,
+    setShowNew,
+    setContactTarget,
+    deleteListing,
+  };
 
   if (!user) {
     // protect all nested routes
@@ -348,7 +345,7 @@ function QareebLayout() {
                   navigate("/app");
                 }}
               >
-                الخلاصة
+                الرئيسية
               </button>
 
               <button
@@ -375,6 +372,7 @@ function QareebLayout() {
       {contactTarget && (
         <ContactModal
           listing={contactTarget}
+          currentUser={user}
           onClose={() => setContactTarget(null)}
         />
       )}

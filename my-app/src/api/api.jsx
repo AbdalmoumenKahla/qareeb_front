@@ -188,3 +188,173 @@ export async function getUsers() {
 
   return result;
 }
+
+/**
+ * RATINGS
+ */
+export async function rateUser({ raterId, rateeId, score, comment }) {
+  const params = new URLSearchParams({
+    raterId: String(raterId),
+    rateeId: String(rateeId),
+    score: String(score),
+  });
+
+  if (comment != null && String(comment).trim() !== "") {
+    params.set("comment", String(comment));
+  }
+
+  const response = await authFetch(`/ratings?${params.toString()}`, {
+    method: "POST",
+  });
+
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to submit rating");
+  }
+
+  return result;
+}
+
+export async function updateRating({ ratingId, raterId, score, comment }) {
+  const params = new URLSearchParams({
+    raterId: String(raterId),
+    score: String(score),
+  });
+
+  if (comment != null && String(comment).trim() !== "") {
+    params.set("comment", String(comment));
+  }
+
+  const response = await authFetch(
+    `/ratings/${ratingId}?${params.toString()}`,
+    {
+      method: "PUT",
+    },
+  );
+
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to update rating");
+  }
+
+  return result;
+}
+
+export async function getAverageScore(userId) {
+  const token = localStorage.getItem("token");
+
+  const tryFetch = async (fetchFn) => {
+    const response = await fetchFn(`/ratings/average/${userId}`);
+    const result = await response.json().catch(() => null);
+    return { response, result };
+  };
+
+  try {
+    if (token) {
+      const auth = await tryFetch(authFetch);
+      if (auth.response.ok) return auth.result;
+
+      const fallback = await tryFetch(baseFetch);
+      if (fallback.response.ok) return fallback.result;
+
+      throw new Error(
+        (auth.result && auth.result.message) ||
+          `Failed to fetch average rating (${auth.response.status})`,
+      );
+    }
+
+    const { response, result } = await tryFetch(baseFetch);
+    if (!response.ok) {
+      throw new Error(
+        (result && result.message) ||
+          `Failed to fetch average rating (${response.status})`,
+      );
+    }
+    return result;
+  } catch (e) {
+    throw new Error((e && e.message) || "Failed to fetch average rating", {
+      cause: e,
+    });
+  }
+}
+
+export async function getRatingCount(userId) {
+  const token = localStorage.getItem("token");
+
+  const tryFetch = async (fetchFn) => {
+    const response = await fetchFn(`/ratings/count/${userId}`);
+    const result = await response.json().catch(() => null);
+    return { response, result };
+  };
+
+  try {
+    if (token) {
+      const auth = await tryFetch(authFetch);
+      if (auth.response.ok) return auth.result;
+
+      const fallback = await tryFetch(baseFetch);
+      if (fallback.response.ok) return fallback.result;
+
+      throw new Error(
+        (auth.result && auth.result.message) ||
+          `Failed to fetch rating count (${auth.response.status})`,
+      );
+    }
+
+    const { response, result } = await tryFetch(baseFetch);
+    if (!response.ok) {
+      throw new Error(
+        (result && result.message) ||
+          `Failed to fetch rating count (${response.status})`,
+      );
+    }
+    return result;
+  } catch (e) {
+    throw new Error((e && e.message) || "Failed to fetch rating count", {
+      cause: e,
+    });
+  }
+}
+
+export async function getRatingsForUser(userId, { page = 0, size = 10 } = {}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    size: String(size),
+  });
+
+  const url = `/ratings/user/${userId}?${params.toString()}`;
+  const token = localStorage.getItem("token");
+
+  const tryFetch = async (fetchFn) => {
+    const response = await fetchFn(url);
+    const result = await response.json().catch(() => ({}));
+    return { response, result };
+  };
+
+  try {
+    if (token) {
+      const auth = await tryFetch(authFetch);
+      if (auth.response.ok) return auth.result;
+
+      const fallback = await tryFetch(baseFetch);
+      if (fallback.response.ok) return fallback.result;
+
+      throw new Error(
+        auth.result?.message ||
+          `Failed to fetch user ratings (${auth.response.status})`,
+      );
+    }
+
+    const { response, result } = await tryFetch(baseFetch);
+    if (!response.ok) {
+      throw new Error(
+        result.message || `Failed to fetch user ratings (${response.status})`,
+      );
+    }
+    return result;
+  } catch (e) {
+    throw new Error((e && e.message) || "Failed to fetch user ratings", {
+      cause: e,
+    });
+  }
+}

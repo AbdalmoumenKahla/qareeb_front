@@ -17,7 +17,7 @@ function ListingCard({ listing, currentUser, onContact, onDelete }) {
     const baseUrl = `${window.location.origin}${window.location.pathname}`;
     const url = anchorId ? `${baseUrl}#${anchorId}` : baseUrl;
 
-    const text = `${typeTagLabel}: ${listing.title}\n📍 ${listing.from} → ${listing.to}\n💰 ${listing.price} ${listing.currency}`;
+    const text = `${typeTagLabel}: ${listing.title}\n📍 ${listing.from} → ${listing.to}`;
     const payload = { title: "Qareeb", text, url };
 
     try {
@@ -120,16 +120,6 @@ function ListingCard({ listing, currentUser, onContact, onDelete }) {
         <span style={{ color: "var(--brand)" }}>→</span>
         <span>📍 {listing.to}</span>
         {listing.status && <span>· {listing.status}</span>}
-        <span
-          style={{
-            marginLeft: "auto",
-            fontWeight: 800,
-            fontSize: "1rem",
-            color: "var(--brand-strong)",
-          }}
-        >
-          {listing.price} {listing.currency}
-        </span>
       </div>
 
       <div className="divider" />

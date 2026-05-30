@@ -19,16 +19,18 @@ function QareebAuth() {
   }, []);
 
   // If already logged in, go to feed
+  let isLoggedIn = false;
   try {
     const stored = localStorage.getItem("user");
     if (stored) {
       const parsed = JSON.parse(stored);
-      if (normalizeAuthUser(parsed))
-        return <Navigate to={redirectTo} replace />;
+      isLoggedIn = Boolean(normalizeAuthUser(parsed));
     }
   } catch {
-    // ignore
+    isLoggedIn = false;
   }
+
+  if (isLoggedIn) return <Navigate to={redirectTo} replace />;
 
   const onAuth = (nextUser) => {
     const normalized = normalizeAuthUser(nextUser);

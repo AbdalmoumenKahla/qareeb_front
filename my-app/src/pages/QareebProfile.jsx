@@ -1,11 +1,110 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import ListingCard from "../components/ListingCard.jsx";
-import { initialFromName } from "../utils/qareeb";
+import { getAverageScore, getRatingCount, getRatingsForUser } from "../api/api";
+import { formatDate, initialFromName } from "../utils/qareeb";
 
 function QareebProfile() {
   const { user, listings, isLoading, setShowNew, deleteListing } =
     useOutletContext();
+
+  const [avgScore, setAvgScore] = useState(null);
+  const [ratingCount, setRatingCount] = useState(null);
+  const [ratings, setRatings] = useState([]);
+  const [isLoadingRatings, setIsLoadingRatings] = useState(false);
+  const [ratingsError, setRatingsError] = useState(null);
+
+  const extractRatings = (payload) => {
+    if (!payload) return [];
+
+    if (Array.isArray(payload)) return payload;
+
+    // Spring Page<T> => { content: [...] }
+    if (Array.isArray(payload.content)) return payload.content;
+
+    // Some APIs wrap data => { data: { content: [...] } }
+    if (payload.data && Array.isArray(payload.data.content))
+      return payload.data.content;
+
+    // Common alternative keys
+    if (Array.isArray(payload.ratings)) return payload.ratings;
+    if (payload.data && Array.isArray(payload.data.ratings))
+      return payload.data.ratings;
+    if (Array.isArray(payload.items)) return payload.items;
+    if (payload.data && Array.isArray(payload.data.items))
+      return payload.data.items;
+
+    return [];
+  };
+
+  useEffect(() => {
+    const userId = user?.id;
+    if (userId == null) {
+      const t = setTimeout(() => {
+        setAvgScore(null);
+        setRatingCount(null);
+        setRatings([]);
+        setRatingsError("لا يمكن تحميل التقييمات لأن user.id غير موجود");
+      }, 0);
+      return () => clearTimeout(t);
+    }
+
+    let isCancelled = false;
+    const load = async () => {
+      setIsLoadingRatings(true);
+      setRatingsError(null);
+      try {
+        const [avgRes, countRes, pageRes] = await Promise.allSettled([
+          getAverageScore(userId),
+          getRatingCount(userId),
+          getRatingsForUser(userId, { page: 0, size: 10 }),
+        ]);
+
+        if (isCancelled) return;
+
+        const avg = avgRes.status === "fulfilled" ? avgRes.value : null;
+        const count = countRes.status === "fulfilled" ? countRes.value : null;
+        const page = pageRes.status === "fulfilled" ? pageRes.value : null;
+
+        setAvgScore(
+          typeof avg === "number" ? avg : avg != null ? Number(avg) : null,
+        );
+        setRatingCount(
+          typeof count === "number"
+            ? count
+            : count != null
+              ? Number(count)
+              : null,
+        );
+
+        const items = extractRatings(page).filter(Boolean);
+        setRatings(items);
+
+        // Only show an error if the actual list call failed
+        if (pageRes.status === "rejected") {
+          const msg = pageRes.reason?.message || "تعذر تحميل قائمة التقييمات";
+          setRatingsError(msg);
+        }
+      } catch (e) {
+        console.error(e);
+        if (!isCancelled)
+          setRatingsError((e && e.message) || "تعذر تحميل التقييمات");
+      } finally {
+        if (!isCancelled) setIsLoadingRatings(false);
+      }
+    };
+
+    load();
+    return () => {
+      isCancelled = true;
+    };
+  }, [user?.id]);
+
+  const scoreLabel = (value) => {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "—";
+    return "⭐".repeat(Math.max(0, Math.min(5, Math.round(n))));
+  };
 
   const mine = useMemo(() => {
     return listings.filter((listing) =>
@@ -35,7 +134,19 @@ function QareebProfile() {
             <div className="badge-row">
               <span className="tag tag-mine">🛡 موثق</span>
               <span className="tag tag-offer">
-                ⭐ {user?.rank != null ? user.rank : "—"} تقييم
+                ⭐{" "}
+                {avgScore != null && Number.isFinite(avgScore)
+                  ? avgScore.toFixed(1)
+                  : user?.rank != null
+                    ? user.rank
+                    : "—"}
+              </span>
+              <span className="tag tag-request">
+                📝{" "}
+                {ratingCount != null && Number.isFinite(ratingCount)
+                  ? ratingCount
+                  : "—"}{" "}
+                مراجعة
               </span>
               <span className="tag tag-request">{mine.length} إعلان</span>
             </div>
@@ -65,6 +176,94 @@ function QareebProfile() {
             </div>
             <div className="stat-chip-label">عمليات مكتملة</div>
           </div>
+        </div>
+
+        <div className="fade-up-3">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 14,
+            }}
+          >
+            <span
+              className="syne"
+              style={{ fontWeight: 700, fontSize: "1.05rem" }}
+            >
+              تقييماتي
+            </span>
+          </div>
+
+          {isLoadingRatings ? (
+            <div className="empty card">
+              <div className="empty-icon">⏳</div>
+              <h3>جاري تحميل التقييمات</h3>
+              <p>يرجى الانتظار...</p>
+            </div>
+          ) : ratingsError ? (
+            <div className="empty card">
+              <div className="empty-icon">⚠️</div>
+              <h3>تعذر تحميل التقييمات</h3>
+              <p>{ratingsError}</p>
+            </div>
+          ) : ratings.length === 0 ? (
+            <div className="empty card">
+              <div className="empty-icon">⭐</div>
+              <h3>لا توجد تقييمات بعد</h3>
+              <p>ستظهر هنا التقييمات التي يستلمها حسابك</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {ratings.map((r) => {
+                const who =
+                  r?.rater?.name ||
+                  r?.raterName ||
+                  (r?.raterId != null ? `مستخدم #${r.raterId}` : "مستخدم");
+
+                const when =
+                  r?.createdAt || r?.createdDate || r?.date || r?.timestamp;
+
+                return (
+                  <div
+                    key={
+                      r?.id ??
+                      `${who}-${String(r?.score ?? "")}-${String(when ?? "")}`
+                    }
+                    className="card"
+                    style={{ padding: 14 }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: 10,
+                      }}
+                    >
+                      <div style={{ fontWeight: 800 }}>{who}</div>
+                      <div style={{ color: "var(--muted)", fontSize: ".8rem" }}>
+                        {when ? formatDate(when) : ""}
+                      </div>
+                    </div>
+                    <div style={{ marginTop: 8, fontSize: "1rem" }}>
+                      {scoreLabel(r?.score)}
+                    </div>
+                    {r?.comment && (
+                      <div
+                        style={{
+                          marginTop: 6,
+                          color: "var(--muted)",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {r.comment}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="fade-up-3">

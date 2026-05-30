@@ -8,12 +8,11 @@ function NewListingModal({ onClose, onSubmit }) {
     desc: "",
     from: "",
     to: "",
-    price: "",
     urgent: false,
   });
 
   const handle = async () => {
-    if (!form.title || !form.from || !form.to || !form.price) return;
+    if (!form.title || !form.from || !form.to) return;
     const ok = await onSubmit(form);
     if (ok) onClose();
   };
@@ -80,38 +79,6 @@ function NewListingModal({ onClose, onSubmit }) {
             value={form.to}
             onChange={(e) => setForm({ ...form, to: e.target.value })}
           />
-        </div>
-      </div>
-      <div className="modal-grid-2">
-        <div className="input-wrap">
-          <label className="input-label">السعر (شيكل)</label>
-          <input
-            className="input"
-            type="number"
-            placeholder="0"
-            value={form.price}
-            onChange={(e) => setForm({ ...form, price: e.target.value })}
-          />
-        </div>
-        <div className="input-wrap modal-urgent">
-          <label className="input-label">عاجل؟</label>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              cursor: "pointer",
-              marginTop: 4,
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={form.urgent}
-              onChange={(e) => setForm({ ...form, urgent: e.target.checked })}
-              style={{ accentColor: "var(--brand)", width: 16, height: 16 }}
-            />
-            <span style={{ fontSize: ".88rem" }}>وضع علامة عاجل</span>
-          </label>
         </div>
       </div>
     </Modal>

@@ -44,7 +44,7 @@ function QareebFeed() {
                 marginBottom: 4,
               }}
             >
-              خلاصة <span className="accent">التوصيل</span>
+              العروض <span className="accent">النشطة</span>
             </h1>
             <p style={{ color: "var(--muted)", fontSize: ".88rem" }}>
               استعرض طلبات وعروض المجتمع
